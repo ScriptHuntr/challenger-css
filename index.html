@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Basics</title>
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0A0A12;
+  --surface: #10101E;
+  --border: #1E1E36;
+  --accent: #4F6EF7;
+  --accent2: #F5A623;
+  --accent3: #2EFFB4;
+  --text: #D8D6F8;
+  --muted: #5A5880;
+  --mono: 'Courier New', Courier, monospace;
+  --sans: system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── GRID BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* ── CORNER GLOW ── */
+body::after {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(79,110,247,0.18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── WRAPPER ── */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+}
+
+/* ══════════════════════════════════════
+   TAB SYSTEM — pure CSS radio trick
+══════════════════════════════════════ */
+
+.tabs-inputs { display: none; }
+
+/* ── TAB NAV ── */
+.tab-nav {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  gap: 0;
+  padding-top: 1.5rem;
+}
+
+.tab-label {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.tab-label:hover { color: var(--text); }
+
+.tab-label::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+/* ── Active states ── */
+#t1:checked ~ .page .tl1,
+#t2:checked ~ .page .tl2,
+#t3:checked ~ .page .tl3,
+#t4:checked ~ .page .tl4,
+#t5:checked ~ .page .tl5 {
+  color: var(--accent);
+}
+
+#t1:checked ~ .page .tl1::after,
+#t2:checked ~ .page .tl2::after,
+#t3:checked ~ .page .tl3::after,
+#t4:checked ~ .page .tl4::after,
+#t5:checked ~ .page .tl5::after {
+  transform: scaleX(1);
+}
+
+/* ── Panel visibility ── */
+.tab-panel {
+  display: none;
+  animation: fadeUp 0.35s ease;
+}
+
+#t1:checked ~ .page .panel-1,
+#t2:checked ~ .page .panel-2,
+#t3:checked ~ .page .panel-3,
+#t4:checked ~ .page .panel-4,
+#t5:checked ~ .page .panel-5 {
+  display: block;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════
+   HERO SECTION
+══════════════════════════════════════ */
+.hero {
+  padding: 5rem 0 4rem;
+  position: relative;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--accent3);
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--accent3);
+}
+
+/* ── BIG TITLE ── */
+.hero-title {
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.hero-title .word-css {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+  position: relative;
+}
+
+.hero-title .word-basics {
+  display: block;
+  color: var(--text);
+  position: relative;
+}
+
+/* Floating code fragments */
+.code-float {
+  position: absolute;
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  color: var(--muted);
+  pointer-events: none;
+  -webkit-text-stroke: 0;
+}
+
+.cf1 { top: 0.6em; right: 0; color: var(--accent); opacity: 0.6; font-size: 0.65rem; }
+.cf2 { bottom: 0.1em; right: 2rem; color: var(--accent2); opacity: 0.5; font-size: 0.6rem; }
+.cf3 { top: 1.2em; left: 0; color: var(--accent3); opacity: 0.35; font-size: 0.55rem; }
+
+/* ── SUBTITLE ── */
+.hero-sub {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 600px;
+  margin-top: 2.5rem;
+  border-left: 2px solid var(--accent);
+  padding-left: 1.25rem;
+}
+.hero-sub em {
+  color: var(--text);
+  font-style: normal;
+}
+
+/* ── STAT STRIP ── */
+.stat-strip {
+  display: flex;
+  gap: 0;
+  margin-top: 3.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.stat {
+  flex: 1;
+  padding: 1.25rem 1.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.stat:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-num span { color: var(--accent); }
+.stat-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+.stat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(79,110,247,0.04) 0%, transparent 60%);
+}
+
+/* ══════════════════════════════════════
+   OBJECTIVES CONTENT
+══════════════════════════════════════ */
+.section-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Steps grid */
+.steps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.step-card {
+  background: var(--surface);
+  padding: 1.75rem;
+  position: relative;
+  transition: background 0.2s;
+}
+.step-card:hover { background: #13132A; }
+
+.step-num {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.step-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.step-body {
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.step-body code {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent2);
+  background: rgba(245,166,35,0.08);
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
+
+.step-card.full { grid-column: 1 / -1; }
+
+/* ── accent bar on hover ── */
+.step-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transition: transform 0.2s ease;
+  transform-origin: bottom;
+}
+.step-card:hover::before { transform: scaleY(1); }
+
+/* ══════════════════════════════════════
+   PLACEHOLDER PANELS
+══════════════════════════════════════ */
+.placeholder-panel {
+  margin-top: 3rem;
+  text-align: center;
+  padding: 5rem 2rem;
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+}
+.placeholder-panel .big-icon {
+  font-family: var(--mono);
+  font-size: 3rem;
+  color: var(--border);
+  margin-bottom: 1rem;
+}
+.placeholder-panel p {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 600px) {
+  .steps-grid { grid-template-columns: 1fr; }
+  .stat-strip { flex-direction: column; }
+  .stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .stat:last-child { border-bottom: none; }
+  .tab-label { padding: 0.75rem 0.9rem; font-size: 0.7rem; }
+}
+
+</style>
+</head>
+<body>
+
+<input class="tabs-inputs" type="radio" name="tabs" id="t1" checked>
+<input class="tabs-inputs" type="radio" name="tabs" id="t2">
+<input class="tabs-inputs" type="radio" name="tabs" id="t3">
+<input class="tabs-inputs" type="radio" name="tabs" id="t4">
+<input class="tabs-inputs" type="radio" name="tabs" id="t5">
+
+<div class="page">
+
+  <nav class="tab-nav" aria-label="Navigation">
+    <label class="tab-label tl1" for="t1">Objectifs</label>
+    <label class="tab-label tl2" for="t2">Déclaration &amp; Instructions</label>
+    <label class="tab-label tl3" for="t3">Soumission de challenge</label>
+    <label class="tab-label tl4" for="t4">Détails de la note</label>
+    <label class="tab-label tl5" for="t5">Solution</label>
+  </nav>
+
+  <!-- PANEL 1 — OBJECTIFS -->
+  <div class="tab-panel panel-1">
+    <section class="hero">
+      <p class="eyebrow">Challenge — Styling</p>
+      <h1 class="hero-title">
+        <span class="word-css">
+          CSS
+          <span class="code-float cf1">{ color: #4F6EF7; }</span>
+          <span class="code-float cf3">display: block;</span>
+        </span>
+        <span class="word-basics">
+          Basics
+          <span class="code-float cf2">font-weight: 900;</span>
+        </span>
+      </h1>
+      <p class="hero-sub">
+        Dans ce challenge, vous allez appliquer vos connaissances des <em>propriétés CSS</em> pour styliser le projet HTML de recette que vous avez créé. L'objectif est d'améliorer la présentation visuelle via les <em>couleurs, les polices, l'espacement et la mise en page</em>.
+      </p>
+      <div class="stat-strip" role="list">
+        <div class="stat" role="listitem">
+          <div class="stat-num">7<span>×</span></div>
+          <div class="stat-label">Étapes</div>
+        </div>
+        <div class="stat" role="listitem">
+          <div class="stat-num"><span>∞</span></div>
+          <div class="stat-label">Créativité</div>
+        </div>
+        <div class="stat" role="listitem">
+          <div class="stat-num">1<span>h</span></div>
+          <div class="stat-label">Durée estimée</div>
+        </div>
+      </div>
+    </section>
+
+    <p class="section-title">Étapes du challenge</p>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <span class="step-num">01 —</span>
+        <p class="step-title">Créer un fichier CSS</p>
+        <p class="step-body">Créez <code>style.css</code> et liez-le à <code>index.html</code> via la balise <code>&lt;link&gt;</code> dans le <code>&lt;head&gt;</code>.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">02 —</span>
+        <p class="step-title">Styliser le body</p>
+        <p class="step-body">Définissez la couleur de fond avec <code>background-color</code> et la police globale avec <code>font-family</code>.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">03 —</span>
+        <p class="step-title">Styliser le header</p>
+        <p class="step-body">Ajoutez des styles visuels à la section en-tête de la page.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">04 —</span>
+        <p class="step-title">Styliser l'image</p>
+        <p class="step-body">Définissez une <code>max-width</code> pour que l'image ne dépasse jamais son conteneur.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">05 —</span>
+        <p class="step-title">Styliser les sections</p>
+        <p class="step-body">Ajoutez des <code>margin</code> entre sections. Différenciez-les visuellement avec une bordure ou une couleur de fond.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">06 —</span>
+        <p class="step-title">Styliser les listes</p>
+        <p class="step-body">Changez le style des puces, ajoutez du <code>padding</code> et des <code>margin</code> aux listes d'ingrédients et d'instructions.</p>
+      </div>
+      <div class="step-card full">
+        <span class="step-num">07 —</span>
+        <p class="step-title">Styliser les infos nutritionnelles</p>
+        <p class="step-body">Utilisez un <code>font-weight</code> différent ou une couleur de fond distincte pour faire ressortir la section nutrition.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 2 -->
+  <div class="tab-panel panel-2">
+    <div class="placeholder-panel">
+      <div class="big-icon">{ }</div>
+      <p>// Déclaration &amp; Instructions — à compléter</p>
+    </div>
+  </div>
+
+  <!-- PANEL 3 -->
+  <div class="tab-panel panel-3">
+    <div class="placeholder-panel">
+      <div class="big-icon">⟶</div>
+      <p>// Soumission de challenge — à compléter</p>
+    </div>
+  </div>
+
+  <!-- PANEL 4 -->
+  <div class="tab-panel panel-4">
+    <div class="placeholder-panel">
+      <div class="big-icon">★</div>
+      <p>// Détails de la note — à compléter</p>
+    </div>
+  </div>
+
+  <!-- PANEL 5 -->
+  <div class="tab-panel panel-5">
+    <div class="placeholder-panel">
+      <div class="big-icon">✓</div>
+      <p>// Solution — à compléter</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
